@@ -1,4 +1,5 @@
-﻿using ApiOAuthEmpleados.Models;
+﻿using ApiOAuthEmpleados.Helpers;
+using ApiOAuthEmpleados.Models;
 using ApiOAuthEmpleados.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,9 +14,12 @@ namespace ApiOAuthEmpleados.Controllers
     public class EmpleadosController : ControllerBase
     {
         private RepositoryHospital repo;
-
-        public EmpleadosController(RepositoryHospital repo)
+        private HelperEmpleadoToken helper;
+        public EmpleadosController
+            (RepositoryHospital repo
+            , HelperEmpleadoToken helper)
         {
+            this.helper = helper;
             this.repo = repo;
         }
 
@@ -37,16 +41,11 @@ namespace ApiOAuthEmpleados.Controllers
         [Authorize]
         [HttpGet]
         [Route("[action]")]
-        public async Task<ActionResult<Empleado>>
+        public async Task<ActionResult<EmpleadoModel>>
             Perfil()
         {
-            Claim claim = HttpContext.User.FindFirst
-                (z => z.Type == "UserData");
-            string json = claim.Value;
-            Empleado empleado = JsonConvert
-                .DeserializeObject<Empleado>(json);
-            return await
-                this.repo.FindEmpleadoAsync(empleado.IdEmpleado);
+            EmpleadoModel model = this.helper.GetEmpleado();
+            return model;
         }
 
         //[Authorize(Roles = "PRESIDENTE")]
@@ -56,12 +55,9 @@ namespace ApiOAuthEmpleados.Controllers
         public async Task<ActionResult<List<Empleado>>>
             Compis()
         {
-            string json = HttpContext.User.FindFirst
-                (x => x.Type == "UserData").Value;
-            Empleado empleado = JsonConvert
-                .DeserializeObject<Empleado>(json);
+            EmpleadoModel model = this.helper.GetEmpleado();
             return await this.repo.GetCompisEmpleadoAsync
-                (empleado.IdDepartamento);
+                (model.IdDepartamento);
         }
 
         [HttpGet]

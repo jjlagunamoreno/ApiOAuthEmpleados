@@ -5,6 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// INICIALIZAMOS EL HELPER PARA LA CYPTOGRAFÍA
+// LUEGO INYECTAMOS HttpContextAccessor
+HelperCryptography.Initialize(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+
 //**************************************************************************************//
 //                                      SEGURIDAD
 //**************************************************************************************//
