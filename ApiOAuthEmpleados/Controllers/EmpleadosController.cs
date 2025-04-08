@@ -41,11 +41,12 @@ namespace ApiOAuthEmpleados.Controllers
         [Authorize]
         [HttpGet]
         [Route("[action]")]
-        public async Task<ActionResult<EmpleadoModel>>
+        public async Task<ActionResult<Empleado>>
             Perfil()
         {
             EmpleadoModel model = this.helper.GetEmpleado();
-            return model;
+            return await
+                this.repo.FindEmpleadoAsync(model.IdEmpleado);
         }
 
         //[Authorize(Roles = "PRESIDENTE")]

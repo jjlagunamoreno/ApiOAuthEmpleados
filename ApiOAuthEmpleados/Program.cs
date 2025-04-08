@@ -34,10 +34,14 @@ builder.Services.AddDbContext<HospitalContext>(options =>
 // REPOSITORIO
 builder.Services.AddTransient<RepositoryHospital>();
 
+// HELPER EMPLEADO TOKEN
+builder.Services.AddScoped<HelperEmpleadoToken>();
+
 // RESTO DE SERVICIOS
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
